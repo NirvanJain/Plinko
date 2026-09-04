@@ -48,9 +48,17 @@ export class Ball {
           const angle = Math.atan2(this.y - obstacle.y, this.x - obstacle.x);
           // Reflect velocity
           const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-          this.vx = (Math.cos(angle) * speed * horizontalFriction);
+          let vx = Math.cos(angle) * speed * horizontalFriction;
+
+          // A dead-center hit reflects almost straight up (vx ~ 0) and the ball
+          // bounces on the same peg forever, so kick it off to one side
+          if (Math.abs(vx) < speed * 0.1) {
+            const dx = this.x - obstacle.x;
+            vx = (dx >= 0 ? 1 : -1) * speed * 0.2;
+          }
+          this.vx = vx;
           this.vy = Math.sin(angle) * speed * verticalFriction;
-  
+
           // Adjust position to prevent sticking
           const overlap = this.radius + obstacle.radius - unpad(dist);
           this.x += pad(Math.cos(angle) * overlap);
