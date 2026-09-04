@@ -1,5 +1,6 @@
-import { HEIGHT, WIDTH, ballRadius, obstacleRadius, sinkWidth } from "../constants";
+import { HEIGHT, WIDTH, ballRadius, obstacleRadius } from "../constants";
 import { Obstacle, Sink, createObstacles, createSinks } from "../objects";
+import { getSinkStyle } from "../sinkStyle";
 import { pad, unpad } from "../padding";
 import { Ball } from "./Ball";
 
@@ -11,6 +12,7 @@ export class BallManager {
     private sinks: Sink[]
     private requestId?: number;
     private onFinish?: (index: number,startX?: number) => void;
+    stopped = false;
 
     constructor(canvasRef: HTMLCanvasElement, onFinish?: (index: number,startX?: number) => void) {
         this.balls = [];
@@ -23,6 +25,7 @@ export class BallManager {
     }
 
     addBall(startX?: number) {
+        if (this.stopped) return;
         const newBall = new Ball(startX || pad(WIDTH / 2 + 13), pad(50), ballRadius, 'red', this.ctx, this.obstacles, this.sinks, (index) => {
             this.balls = this.balls.filter(ball => ball !== newBall);
             this.onFinish?.(index, startX)
@@ -40,35 +43,21 @@ export class BallManager {
         });
     }
   
-    getColor(index: number) {
-        if (index <3 || index > this.sinks.length - 3) {
-            return {background: '#ff003f', color: 'white'};
-        }
-        if (index < 6 || index > this.sinks.length - 6) {
-            return {background: '#ff7f00', color: 'white'};
-        }
-        if (index < 9 || index > this.sinks.length - 9) {
-            return {background: '#ffbf00', color: 'black'};
-        }
-        if (index < 12 || index > this.sinks.length - 12) {
-            return {background: '#ffff00', color: 'black'};
-        }
-        if (index < 15 || index > this.sinks.length - 15) {
-            return {background: '#bfff00', color: 'black'};
-        }
-        return {background: '#7fff00', color: 'black'};
-    }
     drawSinks() {
-        this.ctx.fillStyle = 'green';
         const SPACING = obstacleRadius * 2;
-        for (let i = 0; i<this.sinks.length; i++)  {
-            this.ctx.fillStyle = this.getColor(i).background;
+        this.ctx.font = "bold 11px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        for (let i = 0; i < this.sinks.length; i++) {
             const sink = this.sinks[i];
-            this.ctx.font='normal 13px Arial';
-            this.ctx.fillRect(sink.x, sink.y - sink.height / 2, sink.width - SPACING, sink.height);
-            this.ctx.fillStyle = this.getColor(i).color;
-            this.ctx.fillText((sink?.multiplier)?.toString() + "x", sink.x - 15 + sinkWidth / 2, sink.y);
-        };
+            const style = getSinkStyle(i, this.sinks.length);
+            const drawWidth = sink.width - SPACING;
+            // box and label are both centered on the hit zone (sink.x ± sink.width / 2)
+            this.ctx.fillStyle = style.background;
+            this.ctx.fillRect(sink.x - drawWidth / 2, sink.y - sink.height / 2, drawWidth, sink.height);
+            this.ctx.fillStyle = style.color;
+            this.ctx.fillText(`${sink.multiplier}x`, sink.x, sink.y);
+        }
     }
 
     draw() {
@@ -82,11 +71,13 @@ export class BallManager {
     }
     
     update() {
+        if (this.stopped) return;
         this.draw();
         this.requestId = requestAnimationFrame(this.update.bind(this));
     }
 
     stop() {
+        this.stopped = true;
         if (this.requestId) {
             cancelAnimationFrame(this.requestId);
         }
