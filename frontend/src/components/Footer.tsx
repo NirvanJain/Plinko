@@ -10,11 +10,6 @@ export const Footer = () => {
             to="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            {/* <img
-            src="https://res.cloudinary.com/dcugqfvvg/image/upload/v1713647295/standardboard.1d6f9426_asqzum.png"
-            className="h-8"
-            alt="plinkoo Logo"
-          /> */}
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Plinkoo.100x
             </span>
