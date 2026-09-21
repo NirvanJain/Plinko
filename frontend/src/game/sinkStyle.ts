@@ -3,8 +3,7 @@ export interface SinkStyle {
   color: string;
 }
 
-// Symmetric color bands measured by distance from the middle sink
-// (distance 8 = edge, 0 = center)
+// Assign colors symmetrically by each sink's distance from the center.
 export function getSinkStyle(index: number, total = 17): SinkStyle {
   const dist = Math.abs(index - (total - 1) / 2);
   if (dist >= 6) return { background: "#ff003f", color: "white" };
