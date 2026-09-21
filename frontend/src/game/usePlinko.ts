@@ -9,8 +9,8 @@ export function randomStartX() {
   return pad(WIDTH / 2 + 20 * (Math.random() - 0.5));
 }
 
-// Owns the BallManager lifecycle for a canvas: creates it on mount,
-// optionally auto-drops balls, and stops everything on unmount.
+// Keeps the canvas-bound BallManager and optional auto-drop timer in sync
+// with the component lifecycle.
 export function usePlinko(onFinish?: BallFinishHandler, autoDropMs?: number) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ballManagerRef = useRef<BallManager | undefined>(undefined);
