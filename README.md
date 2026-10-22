@@ -141,7 +141,3 @@ npm run dev
 npm run build
 npm run preview
 ```
-
-## License
-
-This project is currently unlicensed unless otherwise specified in the repository.
