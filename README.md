@@ -127,6 +127,12 @@ Where:
 
 ### Backend
 
+```bash
+cd backend
+npm run build
+npm run start
+```
+
 
 ## License
 
