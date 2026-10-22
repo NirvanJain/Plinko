@@ -125,22 +125,6 @@ Where:
 
 ## Useful scripts
 
-### Backend
-
-```bash
-cd backend
-npm run build
-npm run start
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm run dev
-npm run build
-npm run preview
-```
 
 ## License
 
